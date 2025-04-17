@@ -1,12 +1,14 @@
 <template>
   <nav class="navbar">
-    <div class="logo">小叶子的百宝箱</div>
+    <div class="logo">秋风的百宝箱</div>
     <div class="nav-items">
       <button @click="toggleMenu" class="menu-btn" v-if="isMobile">☰</button>
       <div v-if="!isMobile || showMenu" :class="{ show: showMenu }">
         <button @click="activeTab = 'timer'" :class="{ active: activeTab === 'timer' }">倒计时</button>
         <button @click="activeTab = 'color'" :class="{ active: activeTab === 'color' }">颜色查询</button>
         <button @click="activeTab = 'calculator'" :class="{ active: activeTab === 'calculator' }">计算器</button>
+        <button @click="activeTab = 'password'" :class="{ active: activeTab === 'password' }">密码生成器</button>
+        <button @click="activeTab = 'whatPassword'" :class="{ active: activeTab === 'whatPassword' }">猜密码小游戏</button>
       </div>
     </div>
   </nav>
@@ -74,9 +76,21 @@
         <button @click="clear()" class="clear-btn">C</button>
       </div>
     </div>
+    <div class="card password-card" v-show="activeTab === 'password'">
+      <h2>🔒 密码生成器</h2>
+      <div class="password-controls">
+        <input type="number" v-model="passwordLength" min="1" placeholder="密码长度" class="password-length-input" />
+        <button @click="generatePassword" class="generate-btn">生成密码</button>
+    </div>
+    <div class="card password-card" v-show="activeTab === 'password'">
+      <h2>🎲 猜密码小游戏</h2>
+      <div class="game-controls">
+        <button @click="startGame" :disabled="isGameRunning">开始游戏</button>
+        <button @click="resetGame" :disabled="!isGameRunning">重置游戏</button>
+    </div>
   </main>
 <footer @click="showInfo" class="footer">
-  © 2024 小叶子. 版本号 v1.0.1
+  © 2024 秋风. 版本号 v1.0.2
 </footer>
 </template>
 
@@ -90,7 +104,7 @@ const showMenu = ref(false)
 const toggleMenu = () => {
   showMenu.value = !showMenu.value
 }
-const activeTab = ref<'timer' | 'color' | 'calculator'>('timer')
+const activeTab = ref<'timer' | 'color' | 'calculator' | 'password' | 'whatPassword'>('timer')
 // 倒计时功能补充检查
 const minutes = ref(5);
 const seconds = ref(0);
@@ -229,7 +243,7 @@ const clear = () => {
   waitingForSecondOperand.value = false
 }
 const showInfo = () => {
-  alert('开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面');
+  alert('开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示及计算错误，新增了密码生成器和猜密码小游戏');
 }
 </script>
 
