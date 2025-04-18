@@ -79,14 +79,30 @@
     <div class="card password-card" v-show="activeTab === 'password'">
       <h2>🔒 密码生成器</h2>
       <div class="password-controls">
-        <input type="number" v-model="passwordLength" min="1" placeholder="密码长度" class="password-length-input" />
-        <button @click="generatePassword" class="generate-btn">生成密码</button>
+        <div>
+          <input type="checkbox" v-model="useUppercase" /> 包含大写字母
+          <input type="checkbox" v-model="useLowercase" /> 包含小写字母
+          <input type="checkbox" v-model="useNumbers" checked /> 包含数字
+          <input type="checkbox" v-model="useSymbols" /> 包含符号
+          <input 
+            type="number" 
+            v-model="passwordLength" 
+            min="4" 
+            max="64" 
+            placeholder="密码位数"
+            class="password-length-input"
+          />
+          <button @click="generatePassword">生成密码</button>
+        </div>
+        <div class="password-display" @click="copyPassword">
+          {{ password }}
+        </div>
+      </div>
     </div>
-    <div class="card password-card" v-show="activeTab === 'password'">
+    <div class="card password-card" v-show="activeTab === 'whatPassword'">
       <h2>🎲 猜密码小游戏</h2>
       <div class="game-controls">
-        <button @click="startGame" :disabled="isGameRunning">开始游戏</button>
-        <button @click="resetGame" :disabled="!isGameRunning">重置游戏</button>
+      </div>
     </div>
   </main>
 <footer @click="showInfo" class="footer">
@@ -96,6 +112,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import copy from 'copy-to-clipboard'
 
 // 添加移动端检测
 const isMobile = computed(() => window.innerWidth <= 768)
@@ -245,6 +262,60 @@ const clear = () => {
 const showInfo = () => {
   alert('开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示及计算错误，新增了密码生成器和猜密码小游戏');
 }
+
+// 密码生成器相关代码
+const useUppercase = ref(true)
+const useLowercase = ref(true)
+const useNumbers = ref(true)
+const useSymbols = ref(true)
+const password = ref('')
+const passwordLength = ref(12)
+
+const generatePassword = () => {
+  const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz'
+  const numberChars = '0123456789'
+  const symbolChars = '!@#$%^&*()_+-=[]{}|;:\'",./<>?'
+  
+  let requiredChars = []
+  let allChars = ''
+  
+  if (useUppercase.value) {
+    requiredChars.push(uppercaseChars)
+    allChars += uppercaseChars
+  }
+  if (useLowercase.value) {
+    requiredChars.push(lowercaseChars)
+    allChars += lowercaseChars
+  }
+  if (useNumbers.value) {
+    requiredChars.push(numberChars)
+    allChars += numberChars
+  }
+  if (useSymbols.value) {
+    requiredChars.push(symbolChars)
+    allChars += symbolChars
+  }
+  
+  let generatedPassword = ''
+  
+  // 确保每种选中的字符类型至少包含一个字符
+  requiredChars.forEach(chars => {
+    generatedPassword += chars.charAt(Math.floor(Math.random() * chars.length))
+  })
+  
+  // 随机填充剩余位数
+  for (let i = requiredChars.length; i < passwordLength.value; i++) {
+    generatedPassword += allChars.charAt(Math.floor(Math.random() * allChars.length))
+  }
+  
+  // 打乱密码顺序
+  password.value = generatedPassword.split('').sort(() => 0.5 - Math.random()).join('')
+}
+
+const copyPassword = () => {
+  copy(password.value)
+}
 </script>
 
 <style>
@@ -319,7 +390,7 @@ body {
 }
 
 .card {
-  background: white;
+  background: rgba(255, 255, 255, 0.54);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: var(--card-shadow);
@@ -627,5 +698,18 @@ body {
   text-align: center;
   padding: 1rem;
   cursor: pointer;
+}
+.password-display {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  text-align: center;
+  cursor: pointer;
+  color: black;
+}
+
+.password-controls div {
+  color: black;
 }
 </style>
