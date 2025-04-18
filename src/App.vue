@@ -97,6 +97,7 @@
         <div class="password-display" @click="copyPassword">
           {{ password }}
         </div>
+        <div v-if="showCopied" class="copied-notification">已复制到剪贴板</div>
       </div>
     </div>
     <div class="card password-card" v-show="activeTab === 'whatPassword'">
@@ -108,6 +109,9 @@
 <footer @click="showInfo" class="footer">
   © 2024 秋风. 版本号 v1.0.2
 </footer>
+<div v-if="showVersionInfo" class="version-notification">
+  {{ versionInfo }}
+</div>
 </template>
 
 <script setup lang="ts">
@@ -259,9 +263,16 @@ const clear = () => {
   operator.value = ''
   waitingForSecondOperand.value = false
 }
-const showInfo = () => {
-  alert('开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示及计算错误，新增了密码生成器和猜密码小游戏');
-}
+const showVersionInfo = ref(false);
+  const versionInfo = ref('');
+  
+  const showInfo = () => {
+    versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示及计算错误，新增了密码生成器和猜密码小游戏';
+    showVersionInfo.value = true;
+    setTimeout(() => {
+      showVersionInfo.value = false;
+    }, 3000);
+  }
 
 // 密码生成器相关代码
 const useUppercase = ref(true)
@@ -270,6 +281,7 @@ const useNumbers = ref(true)
 const useSymbols = ref(true)
 const password = ref('')
 const passwordLength = ref(12)
+const showCopied = ref(false)
 
 const generatePassword = () => {
   const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -315,6 +327,10 @@ const generatePassword = () => {
 
 const copyPassword = () => {
   copy(password.value)
+  showCopied.value = true;
+  setTimeout(() => {
+    showCopied.value = false;
+  }, 1000);
 }
 </script>
 
@@ -708,7 +724,17 @@ body {
   cursor: pointer;
   color: black;
 }
-
+.copied-notification, .version-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  white-space: pre-wrap;
+  color: black;
+}
 .password-controls div {
   color: black;
 }
