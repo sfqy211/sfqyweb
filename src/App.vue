@@ -55,7 +55,7 @@
     </div>
     <div class="card calculator-card" v-show="activeTab === 'calculator'">
       <h2>🧮 计算器</h2>
-      <div class="calculator-display">{{ currentValue }}</div>
+      <textarea id="result" readonly class="calculator-display">{{ currentValue }}</textarea>
       <div class="calculator-buttons">
         <button @click="inputNumber('7')">7</button>
         <button @click="inputNumber('8')">8</button>
@@ -103,6 +103,7 @@
     <div class="card password-card" v-show="activeTab === 'whatPassword'">
       <h2>🎲 猜密码小游戏</h2>
       <div class="game-controls">
+      <h3 style="color: black;">施工中</h3>
       </div>
     </div>
   </main>
@@ -267,7 +268,7 @@ const showVersionInfo = ref(false);
   const versionInfo = ref('');
   
   const showInfo = () => {
-    versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示及计算错误，新增了密码生成器和猜密码小游戏';
+    versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示错误，新增了密码生成器';
     showVersionInfo.value = true;
     setTimeout(() => {
       showVersionInfo.value = false;
@@ -700,6 +701,10 @@ body {
   text-align: right;
   font-size: 2rem;
   margin-bottom: 1rem;
+  width: 90%;
+  resize: none;
+  border: none;
+  overflow: hidden;
 }
 .calculator-buttons {
   display: grid;
