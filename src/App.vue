@@ -100,15 +100,33 @@
         <div v-if="showCopied" class="copied-notification">已复制到剪贴板</div>
       </div>
     </div>
-    <div class="card password-card" v-show="activeTab === 'whatPassword'">
+    <div class="card whatPassword" v-show="activeTab === 'whatPassword'">
       <h2>🎲 猜密码小游戏</h2>
       <div class="game-controls">
-      <h3 style="color: black;">施工中</h3>
+        <button @click="queryAnswer" class="query-btn">质疑</button>
+        <button @click="startGame" class="start-btn">开始</button>
+      </div>
+      <div class="chat-container">
+        <div v-for="(message, index) in messages" :key="index" class="message-bubble" :class="{ 'user-message': message.sender === 'user', 'system-message': message.sender === 'system' }">
+          {{ message.text }}
+        </div>
+      </div>
+      <div class="input-area">
+        <select v-model="inputType" class="input-type-select" :disabled="!gameStarted">
+          <option value="result">直接猜测结果</option>
+          <option value="singleNumber">是否包含某单个数字</option>
+          <option value="string">是否包含某连续数字串</option>
+          <option value="divisible">是否能被某数字整除</option>
+          <option value="numberType">数字类型</option>
+        </select>
+        <input v-model="userInput" type="text" placeholder="输入你的猜测..." v-if="!showNumberTypeOptions" :disabled="!gameStarted" />
+        <input v-model="userInput" type="text" placeholder="输入类型包括：奇数、偶数、质数、水仙花数、斐波那契数" v-if="showNumberTypeOptions" :disabled="!gameStarted" />
+        <button @click="sendMessage" :disabled="!gameStarted">发送</button>
       </div>
     </div>
   </main>
 <footer @click="showInfo" class="footer">
-  © 2024 秋风. 版本号 v1.0.2
+  © 2024 秋风. 版本号 v1.0.3
 </footer>
 <div v-if="showVersionInfo" class="version-notification">
   {{ versionInfo }}
@@ -268,7 +286,7 @@ const showVersionInfo = ref(false);
   const versionInfo = ref('');
   
   const showInfo = () => {
-    versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示错误，新增了密码生成器';
+    versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示错误，新增了密码生成器\nv1.0.3 - 新增了猜密码小游戏';
     showVersionInfo.value = true;
     setTimeout(() => {
       showVersionInfo.value = false;
@@ -333,6 +351,126 @@ const copyPassword = () => {
     showCopied.value = false;
   }, 1000);
 }
+
+// 猜密码小游戏相关代码
+const gamePassword = ref('')
+const gameStarted = ref(false)
+const messages = ref([
+  { sender: 'system', text: '欢迎来到猜密码小游戏！请点击开始按钮生成密码。' }
+])
+
+const queryAnswer = () => {
+  
+}
+
+const startGame = () => {
+  // 生成4位数字密码
+  gamePassword.value = ''
+  for (let i = 0; i < 4; i++) {
+    gamePassword.value += Math.floor(Math.random() * 10)
+  }
+  gameStarted.value = true
+  messages.value = [
+    { sender: 'system', text: '密码已生成！请开始猜测吧。' },
+    { sender: 'system', text: `调试信息：当前密码是 ${gamePassword.value}` }
+  ]
+}
+
+
+const userInput = ref('')
+const inputType = ref('singleNumber')
+const showNumberTypeOptions = computed(() => {
+  return inputType.value === 'numberType' || inputType.value === 'sumNumberType'
+})
+
+const isPrime = (num: number) => {
+  if (num <= 1) return false;
+  if (num <= 3) return true;
+  if (num % 2 === 0 || num % 3 === 0) return false;
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
+  }
+  return true;
+};
+
+const isNarcissistic = (num: number) => {
+  const digits = String(num).split('');
+  const len = digits.length;
+  return num === digits.reduce((sum, digit) => sum + Math.pow(parseInt(digit), len), 0);
+};
+
+const isFibonacci = (num: number) => {
+  return isPerfectSquare(5 * num * num + 4) || isPerfectSquare(5 * num * num - 4);
+};
+
+const isPerfectSquare = (x: number) => {
+  const s = Math.sqrt(x);
+  return s === Math.floor(s);
+};
+
+const sendMessage = () => {
+  if (userInput.value.trim() === '') return;
+  
+  // 输入验证
+  if (inputType.value === 'singleNumber' && (!/^\d$/.test(userInput.value) || userInput.value.length !== 1)) {
+    messages.value.push({ sender: 'system', text: '您的输入不合规，请重新输入一个数字' });
+    return;
+  } else if (inputType.value === 'numberType' && !['奇数', '偶数', '质数', '水仙花数', '斐波那契数'].includes(userInput.value)) {
+    messages.value.push({ sender: 'system', text: '您的输入不合规，请选择预设的数字属性' });
+    return;
+  } else if (['result', 'string', 'divisible'].includes(inputType.value) && (!/^\d+$/.test(userInput.value) || parseInt(userInput.value) > 9999)) {
+    messages.value.push({ sender: 'system', text: '您的输入不合规，请输入不大于9999的数字' });
+    return;
+  }
+  
+  messages.value.push({ sender: 'user', text: userInput.value })
+    const typeMap = { '奇数':'odd', '偶数':'even', '质数':'prime', '水仙花数':'narcissistic', '斐波那契数':'fibonacci' }
+const validKeys = Object.keys(typeMap) as Array<keyof typeof typeMap>;
+const typeKey = validKeys.includes(userInput.value as keyof typeof typeMap) ? typeMap[userInput.value as keyof typeof typeMap] : 'odd';
+    if (inputType.value === 'result') {
+      if (!/^\d{4}$/.test(userInput.value)) {
+        messages.value.push({ sender: 'system', text: '请输入4位数字进行猜测！' });
+        return;
+      }
+      if (userInput.value === gamePassword.value) {
+        messages.value.push({ sender: 'system', text: '恭喜您，您猜对了！' })
+      } else {
+        messages.value.push({ sender: 'system', text: '很抱歉，你猜错了，请继续尝试' })
+      }
+    } else if (inputType.value === 'singleNumber') {
+      const contains = gamePassword.value.includes(userInput.value);
+      messages.value.push({ sender: 'system', text: contains ? '是' : '否' });
+    } else if (inputType.value === 'string') {
+      const contains = gamePassword.value.includes(userInput.value);
+      messages.value.push({ sender: 'system', text: contains ? '是' : '否' });
+    } else if (inputType.value === 'divisible') {
+      const num = parseInt(userInput.value);
+      const passwordNum = parseInt(gamePassword.value);
+      const divisible = num !== 0 && passwordNum % num === 0;
+      messages.value.push({ sender: 'system', text: divisible ? '是' : '否' });
+    } else if (inputType.value === 'numberType') {
+      const passwordNum = parseInt(gamePassword.value);
+      let result = false;
+      switch (typeKey) {
+        case 'odd': result = passwordNum % 2 !== 0; break;
+        case 'even': result = passwordNum % 2 === 0; break;
+        case 'prime': 
+          result = isPrime(passwordNum); 
+          break;
+        case 'narcissistic': 
+          result = isNarcissistic(passwordNum); 
+          break;
+        case 'fibonacci': 
+          result = isFibonacci(passwordNum); 
+          break;
+      }
+      messages.value.push({ sender: 'system', text: result ? '是' : '否' });
+    } else {
+      messages.value.push({ sender: 'system', text: '这是系统回复，用户输入了：' + userInput.value })
+    }
+    
+    userInput.value = ''
+  }
 </script>
 
 <style>
@@ -703,7 +841,6 @@ body {
   margin-bottom: 1rem;
   width: 90%;
   resize: none;
-  border: none;
   overflow: hidden;
 }
 .calculator-buttons {
@@ -742,5 +879,94 @@ body {
 }
 .password-controls div {
   color: black;
+}
+.whatPassword {
+  position: relative;
+  padding-bottom: 50px;
+  width: 1000px;
+}
+
+.game-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.start-btn {
+  background-color: #4CAF50;
+  color: black;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.reset-btn {
+  background-color: #f44336;
+  color: black;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.chat-container {
+  height: 300px;
+  overflow-y: auto;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+.message-bubble {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  max-width: 70%;
+  color: black;
+  display: flex;
+}
+.user-message {
+  background-color: #affd73;
+  margin-left: auto;
+  text-align: right;
+  width: fit-content;
+  max-width: 70%;
+  padding: 10px 15px;
+}
+.system-message {
+  background-color: #E0E0E0;
+  margin-right: auto;
+  text-align: left;
+  width: fit-content;
+  max-width: 70%;
+  padding: 10px 15px;
+}
+.input-area {
+  display: flex;
+  position: absolute;
+  bottom: 10px;
+  width: calc(100% - 30px);
+}
+.input-area input, .input-area select {
+  flex: 1;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+}
+.input-area button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--primary-blue);
+  color: white;
+  margin-left: 5px;
+}
+
+.input-type-select {
+  min-width: 120px;
+}
+
+.number-type-select {
+  min-width: 100px;
 }
 </style>
