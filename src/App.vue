@@ -420,8 +420,7 @@ const startGame = () => {
   score.value = 500
   hasLied.value = false
   messages.value = [
-    { sender: 'system', text: '密码已生成！请开始猜测吧' },
-    { sender: 'system', text: `调试信息：当前密码是 ${gamePassword.value}` }
+    { sender: 'system', text: '密码已生成！请开始猜测吧' }
   ]
 }
 
@@ -514,15 +513,15 @@ const typeKey = validKeys.includes(userInput.value as keyof typeof typeMap) ? ty
       }
     } else if (inputType.value === 'singleNumber') {
       const contains = gamePassword.value.includes(userInput.value);
-      messages.value.push({ sender: 'system', text: shouldLie ? (contains ? '否 (当前此回答为假)' : '是 (当前此回答为假)') : (contains ? '是 (当前此回答为真)' : '否 (当前此回答为真)') });
+      messages.value.push({ sender: 'system', text: shouldLie ? (contains ? '否' : '是') : (contains ? '是' : '否') });
     } else if (inputType.value === 'string') {
       const contains = gamePassword.value.includes(userInput.value);
-      messages.value.push({ sender: 'system', text: shouldLie ? (contains ? '否 (当前此回答为假)' : '是 (当前此回答为假)') : (contains ? '是 (当前此回答为真)' : '否 (当前此回答为真)') });
+      messages.value.push({ sender: 'system', text: shouldLie ? (contains ? '否' : '是') : (contains ? '是' : '否') });
     } else if (inputType.value === 'divisible') {
       const num = parseInt(userInput.value);
       const passwordNum = parseInt(gamePassword.value);
       const divisible = num !== 0 && passwordNum % num === 0;
-      messages.value.push({ sender: 'system', text: shouldLie ? (divisible ? '否 (当前此回答为假)' : '是 (当前此回答为假)') : (divisible ? '是 (当前此回答为真)' : '否 (当前此回答为真)') });
+      messages.value.push({ sender: 'system', text: shouldLie ? (divisible ? '否' : '是') : (divisible ? '是' : '否') });
     } else if (inputType.value === 'numberType') {
       const passwordNum = parseInt(gamePassword.value);
       let result = false;
@@ -539,7 +538,7 @@ const typeKey = validKeys.includes(userInput.value as keyof typeof typeMap) ? ty
           result = isFibonacci(passwordNum); 
           break;
       }
-      messages.value.push({ sender: 'system', text: shouldLie ? (result ? '否 (当前此回答为假)' : '是 (当前此回答为假)') : (result ? '是 (当前此回答为真)' : '否 (当前此回答为真)') });
+      messages.value.push({ sender: 'system', text: shouldLie ? (result ? '否' : '是') : (result ? '是' : '否') });
     } else {
       messages.value.push({ sender: 'system', text: '这是系统回复，用户输入了：' + userInput.value })
     }
@@ -1064,6 +1063,7 @@ body {
 
 .query-btn {
   background-color: black; 
+  color: white;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
