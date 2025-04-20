@@ -127,8 +127,9 @@
       </div>
     </div>
   </main>
-<footer @click="showInfo" class="footer">
-  © 2024 秋风. 版本号 v1.0.3
+<footer class="footer">
+  <button @click="showInfo" class="version-btn">© 2024 秋风. 版本号 v1.0.4</button>
+  <button @click="openGithub" class="github-btn">GitHub</button>
 </footer>
 <div v-if="showVersionInfo" class="version-notification">
   {{ versionInfo }}
@@ -291,10 +292,14 @@ const clear = () => {
   waitingForSecondOperand.value = false
 }
 const showVersionInfo = ref(false);
-  const versionInfo = ref('');
+const versionInfo = ref('');
   
-  const showInfo = () => {
-    versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示错误，新增了密码生成器\nv1.0.3 - 新增了猜密码小游戏';
+const openGithub = () => {
+  window.open('https://github.com/sfqy211');
+}
+
+const showInfo = () => {
+    versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示错误，新增了密码生成器\nv1.0.3 - 新增了猜密码小游戏\nv1.0.4 - 修复了猜密码小游戏的部分bug和界面显示问题，准备开始项目结构优化';
     showVersionInfo.value = true;
     setTimeout(() => {
       showVersionInfo.value = false;
@@ -919,6 +924,10 @@ body {
   gap: 0.5rem;
 }
 .footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -927,6 +936,32 @@ body {
   padding: 1rem;
   cursor: pointer;
 }
+
+.version-btn {
+  padding: 0.25rem 0.5rem;
+  background: #ffffff6a;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.version-btn:hover {
+  background: #2d3338;
+}
+
+.github-btn {
+  padding: 0.25rem 0.5rem;
+  background: #ffffff6a;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.github-btn:hover {
+  background: #2d3338;
+}
+
 
 .rules-modal {
   position: fixed;
