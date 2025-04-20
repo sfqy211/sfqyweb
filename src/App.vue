@@ -103,6 +103,7 @@
     <div class="card whatPassword" v-show="activeTab === 'whatPassword'">
       <h2>🎲 猜密码小游戏</h2>
       <div class="game-controls">
+        <span class="score-display">积分: {{ score }}分</span>
         <button @click="queryAnswer" class="query-btn">质疑</button>
         <button @click="startGame" class="start-btn">开始</button>
       </div>
@@ -355,8 +356,9 @@ const copyPassword = () => {
 // 猜密码小游戏相关代码
 const gamePassword = ref('')
 const gameStarted = ref(false)
+const score = ref(0)
 const messages = ref([
-  { sender: 'system', text: '欢迎来到猜密码小游戏！请点击开始按钮生成密码。' }
+  { sender: 'system', text: '欢迎来到猜密码小游戏！请点击开始按钮生成密码' }
 ])
 
 const queryAnswer = () => {
@@ -370,8 +372,9 @@ const startGame = () => {
     gamePassword.value += Math.floor(Math.random() * 10)
   }
   gameStarted.value = true
+  score.value = 500
   messages.value = [
-    { sender: 'system', text: '密码已生成！请开始猜测吧。' },
+    { sender: 'system', text: '密码已生成！请开始猜测吧' },
     { sender: 'system', text: `调试信息：当前密码是 ${gamePassword.value}` }
   ]
 }
@@ -427,6 +430,21 @@ const sendMessage = () => {
     const typeMap = { '奇数':'odd', '偶数':'even', '质数':'prime', '水仙花数':'narcissistic', '斐波那契数':'fibonacci' }
 const validKeys = Object.keys(typeMap) as Array<keyof typeof typeMap>;
 const typeKey = validKeys.includes(userInput.value as keyof typeof typeMap) ? typeMap[userInput.value as keyof typeof typeMap] : 'odd';
+    // 根据不同操作类型扣分
+    if (inputType.value === 'result') {
+      score.value -= 50
+    } else if (inputType.value === 'numberType') {
+      score.value -= 25
+    } else {
+      score.value -= 10
+    }
+    
+    if (score.value <= 0) {
+      messages.value.push({ sender: 'system', text: '游戏结束！积分已用完。' })
+      gameStarted.value = false
+      return;
+    }
+    
     if (inputType.value === 'result') {
       if (!/^\d{4}$/.test(userInput.value)) {
         messages.value.push({ sender: 'system', text: '请输入4位数字进行猜测！' });
@@ -893,6 +911,23 @@ body {
   margin-bottom: 15px;
 }
 
+.score-display {
+  font-weight: bold;
+  color: black;
+  background-color: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.query-btn {
+  background-color: black; 
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .start-btn {
   background-color: #4CAF50;
   color: black;
@@ -902,14 +937,6 @@ body {
   cursor: pointer;
 }
 
-.reset-btn {
-  background-color: #f44336;
-  color: black;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
 .chat-container {
   height: 300px;
   overflow-y: auto;
