@@ -299,7 +299,7 @@ const openGithub = () => {
 }
 
 const showInfo = () => {
-    versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示错误，新增了密码生成器\nv1.0.3 - 新增了猜密码小游戏\nv1.0.4 - 修复了猜密码小游戏的部分bug和界面显示问题，准备开始项目结构优化';
+    versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示错误，新增了密码生成器\nv1.0.3 - 新增了猜密码小游戏\nv1.0.4 - 修复了猜密码小游戏的界面显示问题，准备开始项目结构优化';
     showVersionInfo.value = true;
     setTimeout(() => {
       showVersionInfo.value = false;
@@ -386,7 +386,7 @@ const gameRules = ref(`
         <li>询问是否包含某数字(-10分)</li>
         <li>询问是否包含某连续数字串(-10分)</li>
         <li>询问是否能被某数字整除(-10分)</li>
-        <li>询问数字类型(-25分)</li>
+        <li>询问数字类型：奇数、偶数、质数、水仙花数、斐波那契数(-25分)</li>
       </ul>
     </li>
     <li>系统回答可能是真话也可能是假话,说谎次数初始为1,如果质疑成功则还会说谎一次</li>
@@ -1037,7 +1037,13 @@ body {
 .whatPassword {
   position: relative;
   padding-bottom: 50px;
-  width: 1000px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .whatPassword {
+    width: 1000px;
+  }
 }
 
 .game-controls {
@@ -1108,17 +1114,17 @@ body {
   display: flex;
   position: absolute;
   bottom: 10px;
-  width: calc(100% - 30px);
+  width: calc(100% - 40px);
 }
 .input-area input, .input-area select {
-  flex: 1;
-  padding: 10px;
+  flex: 0.5;
+  padding: 5px;
   border-radius: 5px;
   border: 1px solid #ccc;
   margin-right: 5px;
 }
 .input-area button {
-  padding: 10px 15px;
+  padding: 8px 12px;
   border: none;
   border-radius: 5px;
   background-color: var(--primary-blue);
@@ -1127,10 +1133,10 @@ body {
 }
 
 .input-type-select {
-  min-width: 120px;
+  min-width: 100px;
 }
 
 .number-type-select {
-  min-width: 100px;
+  min-width: 80px;
 }
 </style>
