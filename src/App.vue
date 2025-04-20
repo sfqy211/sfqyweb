@@ -103,6 +103,7 @@
     <div class="card whatPassword" v-show="activeTab === 'whatPassword'">
       <h2>🎲 猜密码小游戏</h2>
       <div class="game-controls">
+        <button @click="whatRule">❓</button>
         <span class="score-display">积分: {{ score }}分</span>
         <button @click="queryAnswer" class="query-btn">质疑</button>
         <button @click="startGame" class="start-btn">开始</button>
@@ -132,10 +133,16 @@
 <div v-if="showVersionInfo" class="version-notification">
   {{ versionInfo }}
 </div>
+<div v-if="showRules" class="rules-modal" @click.self="showRules = false">
+  <div class="rules-content">
+    <button class="close-btn" @click="showRules = false">×</button>
+    <div v-html="gameRules" class="gameRules"></div>
+  </div>
+</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import copy from 'copy-to-clipboard'
 
 // 添加移动端检测
@@ -360,9 +367,42 @@ const score = ref(0)
 const messages = ref([
   { sender: 'system', text: '欢迎来到猜密码小游戏！请点击开始按钮生成密码' }
 ])
+const hasLied = ref(false)
+
+const showRules = ref(false);
+const gameRules = ref(`
+  <h3>猜密码小游戏规则</h3>
+  <ol>
+    <li>游戏开始时系统会随机生成一个4位数字密码</li>
+    <li>初始积分为500分</li>
+    <li>你可以通过以下方式提问:
+      <ul>
+        <li>直接猜测结果(-50分)</li>
+        <li>询问是否包含某数字(-10分)</li>
+        <li>询问是否包含某连续数字串(-10分)</li>
+        <li>询问是否能被某数字整除(-10分)</li>
+        <li>询问数字类型(-25分)</li>
+      </ul>
+    </li>
+    <li>系统回答可能是真话也可能是假话,说谎次数初始为1,如果质疑成功则还会说谎一次</li>
+    <li>你可以点击"质疑"按钮质疑系统说谎(-100分),质疑成功+900分</li>
+    <li>积分用完游戏结束</li>
+  </ol>
+`);
+
+const whatRule = () => {
+  showRules.value = true;
+}
 
 const queryAnswer = () => {
-  
+  if (!hasLied.value) {
+    score.value -= 100;
+    messages.value.push({ sender: 'system', text: '质疑失败，当前没有说谎的回答' });
+  } else {
+    score.value += 900;
+    hasLied.value = false;
+    messages.value.push({ sender: 'system', text: '恭喜您质疑成功，当前存在说谎的回答' });
+  }
 }
 
 const startGame = () => {
@@ -373,6 +413,7 @@ const startGame = () => {
   }
   gameStarted.value = true
   score.value = 500
+  hasLied.value = false
   messages.value = [
     { sender: 'system', text: '密码已生成！请开始猜测吧' },
     { sender: 'system', text: `调试信息：当前密码是 ${gamePassword.value}` }
@@ -426,7 +467,18 @@ const sendMessage = () => {
     return;
   }
   
+  // 决定是否说谎(50%概率且仅限特定选项且仅一次)
+  let shouldLie = false;
+  if (!hasLied.value && ['singleNumber', 'string', 'divisible', 'numberType'].includes(inputType.value)) {
+    shouldLie = Math.random() < 0.5;
+    if (shouldLie) hasLied.value = true;
+  }
+  
   messages.value.push({ sender: 'user', text: userInput.value })
+    nextTick(() => {
+      const container = document.querySelector('.chat-container')
+      if (container) container.scrollTop = container.scrollHeight
+    })
     const typeMap = { '奇数':'odd', '偶数':'even', '质数':'prime', '水仙花数':'narcissistic', '斐波那契数':'fibonacci' }
 const validKeys = Object.keys(typeMap) as Array<keyof typeof typeMap>;
 const typeKey = validKeys.includes(userInput.value as keyof typeof typeMap) ? typeMap[userInput.value as keyof typeof typeMap] : 'odd';
@@ -457,15 +509,15 @@ const typeKey = validKeys.includes(userInput.value as keyof typeof typeMap) ? ty
       }
     } else if (inputType.value === 'singleNumber') {
       const contains = gamePassword.value.includes(userInput.value);
-      messages.value.push({ sender: 'system', text: contains ? '是' : '否' });
+      messages.value.push({ sender: 'system', text: shouldLie ? (contains ? '否 (当前此回答为假)' : '是 (当前此回答为假)') : (contains ? '是 (当前此回答为真)' : '否 (当前此回答为真)') });
     } else if (inputType.value === 'string') {
       const contains = gamePassword.value.includes(userInput.value);
-      messages.value.push({ sender: 'system', text: contains ? '是' : '否' });
+      messages.value.push({ sender: 'system', text: shouldLie ? (contains ? '否 (当前此回答为假)' : '是 (当前此回答为假)') : (contains ? '是 (当前此回答为真)' : '否 (当前此回答为真)') });
     } else if (inputType.value === 'divisible') {
       const num = parseInt(userInput.value);
       const passwordNum = parseInt(gamePassword.value);
       const divisible = num !== 0 && passwordNum % num === 0;
-      messages.value.push({ sender: 'system', text: divisible ? '是' : '否' });
+      messages.value.push({ sender: 'system', text: shouldLie ? (divisible ? '否 (当前此回答为假)' : '是 (当前此回答为假)') : (divisible ? '是 (当前此回答为真)' : '否 (当前此回答为真)') });
     } else if (inputType.value === 'numberType') {
       const passwordNum = parseInt(gamePassword.value);
       let result = false;
@@ -482,7 +534,7 @@ const typeKey = validKeys.includes(userInput.value as keyof typeof typeMap) ? ty
           result = isFibonacci(passwordNum); 
           break;
       }
-      messages.value.push({ sender: 'system', text: result ? '是' : '否' });
+      messages.value.push({ sender: 'system', text: shouldLie ? (result ? '否 (当前此回答为假)' : '是 (当前此回答为假)') : (result ? '是 (当前此回答为真)' : '否 (当前此回答为真)') });
     } else {
       messages.value.push({ sender: 'system', text: '这是系统回复，用户输入了：' + userInput.value })
     }
@@ -875,6 +927,55 @@ body {
   padding: 1rem;
   cursor: pointer;
 }
+
+.rules-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.rules-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.rules-content h3 {
+  margin-top: 0;
+  color: var(--primary-blue);
+}
+
+.rules-content ol, .rules-content ul {
+  padding-left: 1.5rem;
+}
+
+.rules-content li {
+  margin-bottom: 0.5rem;
+}
+.gameRules {
+  color: black; 
+}
 .password-display {
   background: #ffffff;
   padding: 1rem;
@@ -941,7 +1042,8 @@ body {
   height: 300px;
   overflow-y: auto;
   border-bottom: 1px solid #ccc;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
+  max-height: 300px;
 }
 .message-bubble {
   padding: 10px;
