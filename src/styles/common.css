@@ -1,0 +1,42 @@
+:root {
+  --primary-blue: #2196F3;
+  --background: #b7c2d4;
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui;
+  background: var(--background);
+}
+
+.container {
+  padding-top: 80px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.54);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+}
+
+.card h2 {
+  margin: 0 0 1.5rem 0;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+} 
