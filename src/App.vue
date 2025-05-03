@@ -2,11 +2,21 @@
   <Navbar :active-tab="activeTab" @tab-change="handleTabChange" />
   
   <main class="container">
-    <Timer v-show="activeTab === 'timer'" />
-    <ColorPicker v-show="activeTab === 'color'" />
-    <Calculator v-show="activeTab === 'calculator'" />
-    <PasswordGenerator v-show="activeTab === 'password'" />
-    <PasswordGame v-show="activeTab === 'whatPassword'" />
+    <div v-if="activeTab === 'timer'" class="card">
+      <Timer />
+    </div>
+    <div v-if="activeTab === 'color'" class="card">
+      <ColorPicker />
+    </div>
+    <div v-if="activeTab === 'calculator'" class="card">
+      <Calculator />
+    </div>
+    <div v-if="activeTab === 'password'" class="card">
+      <PasswordGenerator />
+    </div>
+    <div v-if="activeTab === 'whatPassword'" class="card">
+      <PasswordGame />
+    </div>
   </main>
 
   <Footer />
