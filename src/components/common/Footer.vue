@@ -44,6 +44,9 @@ const showInfo = () => {
   text-align: center;
   padding: 1rem;
   cursor: pointer;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 999;
 }
 
 .version-btn, .github-btn, .bilibili-btn {
