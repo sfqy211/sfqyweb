@@ -2,6 +2,7 @@
   <footer class="footer">
     <button @click="showInfo" class="version-btn">© 2024 秋风. 版本号 v1.0.4</button>
     <button @click="openGithub" class="github-btn">GitHub</button>
+    <button @click="openBilibili" class="bilibili-btn">哔哩哔哩</button>
   </footer>
   <div v-if="showVersionInfo" class="version-notification">
     {{ versionInfo }}
@@ -16,6 +17,9 @@ const versionInfo = ref('')
 
 const openGithub = () => {
   window.open('https://github.com/sfqy211')
+}
+const openBilibili = () => {
+  window.open('https://space.bilibili.com/182587768')
 }
 
 const showInfo = () => {
@@ -42,7 +46,7 @@ const showInfo = () => {
   cursor: pointer;
 }
 
-.version-btn, .github-btn {
+.version-btn, .github-btn, .bilibili-btn {
   padding: 0.25rem 0.5rem;
   background: #ffffff6a;
   color: rgb(0, 0, 0);
@@ -51,7 +55,7 @@ const showInfo = () => {
   cursor: pointer;
 }
 
-.version-btn:hover, .github-btn:hover {
+.version-btn:hover, .github-btn:hover, .bilibili-btn:hover {
   background: #2d3338;
 }
 
