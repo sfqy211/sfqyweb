@@ -18,6 +18,9 @@
       <div v-if="activeTab === 'whatPassword'" class="app-window">
         <PasswordGame />
       </div>
+      <div v-if="activeTab === 'blog'" class="app-window">
+        <BlogList />
+      </div>
     </main>
 
     <Dock :active-tab="activeTab" @tab-change="handleTabChange" />
@@ -34,6 +37,7 @@ import ColorPicker from './components/color/ColorPicker.vue'
 import Calculator from './components/calculator/Calculator.vue'
 import PasswordGenerator from './components/password/PasswordGenerator.vue'
 import PasswordGame from './components/game/PasswordGame.vue'
+import BlogList from './components/blog/BlogList.vue'
 
 const activeTab = ref('')
 
@@ -70,12 +74,12 @@ const handleTabChange = (tab: string) => {
 }
 
 .app-window {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.222);
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin: 0 auto;
-  max-width: 800px;
+  max-width: 1200px; /* Increased from 800px */
 }
 
 @media (max-width: 768px) {

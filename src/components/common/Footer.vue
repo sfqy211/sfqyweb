@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <button @click="showInfo" class="version-btn">© 2024 秋风. 版本号 v1.0.4</button>
+    <button @click="showInfo" class="version-btn">©2025秋风v1.0.4</button>
     <button @click="openGithub" class="github-btn">GitHub</button>
     <button @click="openBilibili" class="bilibili-btn">哔哩哔哩</button>
   </footer>
