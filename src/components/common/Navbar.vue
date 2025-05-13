@@ -9,6 +9,7 @@
         <button @click="$emit('tab-change', 'calculator')" :class="{ active: activeTab === 'calculator' }">计算器</button>
         <button @click="$emit('tab-change', 'password')" :class="{ active: activeTab === 'password' }">密码生成器</button>
         <button @click="$emit('tab-change', 'whatPassword')" :class="{ active: activeTab === 'whatPassword' }">猜密码小游戏</button>
+        <button @click="$emit('tab-change', 'blog')" :class="{ active: activeTab === 'blog' }">博客</button>
       </div>
     </div>
   </nav>
@@ -106,4 +107,4 @@ const toggleMenu = () => {
     flex-direction: column;
   }
 }
-</style> 
+</style>
