@@ -125,6 +125,7 @@ const clear = () => {
   border: none;
   border-radius: 8px;
   background: #f0f0f0;
+  color: black;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -152,4 +153,4 @@ const clear = () => {
     font-size: 1rem;
   }
 }
-</style> 
+</style>

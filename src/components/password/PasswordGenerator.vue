@@ -104,6 +104,7 @@ const copyPassword = () => {
   flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
+  color: black;
 }
 
 .password-length-input {
