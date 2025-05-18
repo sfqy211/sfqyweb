@@ -4,11 +4,11 @@
     <div class="nav-items">
       <button @click="toggleMenu" class="menu-btn" v-if="isMobile">☰</button>
       <div v-if="!isMobile || showMenu" :class="{ show: showMenu }">
-        <button @click="$emit('tab-change', 'timer')" :class="{ active: activeTab === 'timer' }">倒计时</button>
-        <button @click="$emit('tab-change', 'color')" :class="{ active: activeTab === 'color' }">颜色查询</button>
-        <button @click="$emit('tab-change', 'calculator')" :class="{ active: activeTab === 'calculator' }">计算器</button>
-        <button @click="$emit('tab-change', 'password')" :class="{ active: activeTab === 'password' }">密码生成器</button>
-        <button @click="$emit('tab-change', 'whatPassword')" :class="{ active: activeTab === 'whatPassword' }">猜密码小游戏</button>
+        <button @click="$emit('tab-change', 'timer')">倒计时</button>
+        <button @click="$emit('tab-change', 'color')">颜色查询</button>
+        <button @click="$emit('tab-change', 'calculator')">计算器</button>
+        <button @click="$emit('tab-change', 'password')">密码生成器</button>
+        <button @click="$emit('tab-change', 'whatPassword')">猜密码小游戏</button>
       </div>
     </div>
   </nav>
@@ -16,14 +16,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-
-const props = defineProps<{
-  activeTab: string
-}>()
-
-const emit = defineEmits<{
-  (e: 'tab-change', tab: string): void
-}>()
 
 const isMobile = computed(() => window.innerWidth <= 768)
 const showMenu = ref(false)

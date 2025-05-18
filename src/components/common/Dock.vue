@@ -10,7 +10,6 @@
         v-for="(item, index) in dockItems" 
         :key="index"
         class="dock-item"
-        :class="{ active: activeTab === item.id }"
         @click="handleClick(item.id)"
       >
         <span class="dock-icon">{{ item.icon }}</span>
@@ -21,11 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
-const props = defineProps<{
-  activeTab: string
-}>()
+
 
 const emit = defineEmits<{
   (e: 'tab-change', tab: string): void
