@@ -39,19 +39,7 @@ import PasswordGenerator from './components/password/PasswordGenerator.vue'
 import PasswordGame from './components/game/PasswordGame.vue'
 import SongList from './components/song-list/SongList.vue'
 
-const activeTab = ref('')
-
-// 注册组件
-const components = {
-  Dock,
-  Footer,
-  Timer,
-  ColorPicker,
-  Calculator,
-  PasswordGenerator,
-  PasswordGame,
-  SongList
-}
+const activeTab = ref('song-list')
 
 const handleTabChange = (tab: string) => {
   activeTab.value = tab
