@@ -34,7 +34,7 @@ const dockItems = [
   { id: 'calculator', icon: '🧮', label: '计算器' },
   { id: 'password', icon: '🔑', label: '密码生成器' },
   { id: 'whatPassword', icon: '🎮', label: '猜密码' },
-  { id: 'song-list', icon: '📝', label: '鱼鸽鸽歌单' }
+  { id: 'song-list', icon: '🎵', label: '鱼鸽鸽歌单' }
 ]
 
 // 移动端响应式状态

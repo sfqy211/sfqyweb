@@ -1,6 +1,6 @@
 <template>
   <div class="card song-list">
-    <h2>🎵 歌单</h2>
+    <h2>🎵 Song List</h2>
     <div class="search_box">
       <div class="search_form">
         <input class="search_input" type="text" placeholder="点'搜索'进行随机或输入文字搜索">
@@ -8,32 +8,19 @@
       </div>
     </div>
     <div class="type_box">
-      <div class="title">标签</div>
       <ul class="type_list">
         <span class="type_selected">全部</span>
         <span class="type">流行</span>
         <span class="type">古风</span>
-        <span class="type">粤语</span>
-        <span class="type">日语</span>
-        <span class="type">儿歌</span>
-        <span class="type">国风</span>
-        <span class="type">民歌</span>
       </ul>
     </div>
+    <div class="artist-info" type="artist">
+      <h3>鱼鸽鸽</h3>
+      <p>这是一个机智帅气 美丽动人 玉树临风 风流倜傥的冰山美人 集英俊帅气于一身站在食物链顶端的天才电竞美少女！</p>
+      <p><a href="https://live.bilibili.com/673" target="_blank">直播间</a></p>
+      <p>网易云：鱼鸽鸽</p>
+    </div>
     <div class="song_list">
-      <div class="song_item">
-        <div class="song_info">my love - 田馥甄</div>
-        <div class="info_tag_area">
-          <span class="info_tag">流行</span>
-        </div>
-      </div>
-      <div class="song_item">
-        <div class="song_info">P.S.我爱你 - alin</div>
-        <div class="info_tag_area">
-          <span class="info_tag">流行</span>
-        </div>
-      </div>
-      <!-- 添加更多歌曲项 -->
     </div>
   </div>
 </template>
@@ -142,5 +129,9 @@
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.9rem;
+}
+
+.artist-info { 
+  color: black;
 }
 </style>

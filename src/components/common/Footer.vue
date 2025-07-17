@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <button @click="showInfo" class="version-btn">©2025秋风v1.0.4</button>
+    <button @click="showInfo" class="version-btn">©2025秋风v1.1.1</button>
     <button @click="openGithub" class="github-btn">GitHub</button>
     <button @click="openBilibili" class="bilibili-btn">哔哩哔哩</button>
   </footer>
@@ -23,7 +23,7 @@ const openBilibili = () => {
 }
 
 const showInfo = () => {
-  versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示错误，新增了密码生成器\nv1.0.3 - 新增了猜密码小游戏\nv1.0.4 - 修复了猜密码小游戏的界面显示问题，准备开始项目结构优化\nv1.1.0 - 优化代码结构，便于后续开发'
+  versionInfo.value = '开发团队：朔风秋叶\n版本更新历史：\nv1.0.0 - 初始版本\nv1.0.1 - 新增了计算器功能，删除待办功能，优化移动端页面\nv1.0.2 - 修复了计算器显示错误，新增了密码生成器\nv1.0.3 - 新增了猜密码小游戏\nv1.0.4 - 修复了猜密码小游戏的界面显示问题，准备开始项目结构优化\nv1.1.0 - 优化代码结构，便于后续开发\nv1.1.1 - 增加鱼鸽鸽歌单'
   showVersionInfo.value = true
   setTimeout(() => {
     showVersionInfo.value = false
