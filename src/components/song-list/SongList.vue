@@ -1,31 +1,90 @@
+<script setup lang="ts">
+    import songs from './songs.json'
+    
+    interface Song {
+      name: string;
+      artist: string;
+      tags: string[];
+      note: string;
+    }
+    
+    // 直接使用导入的songs
+</script>
+
 <template>
   <div class="card song-list">
-    <h2>🎵 Song List</h2>
-    <div class="search_box">
-      <div class="search_form">
-        <input class="search_input" type="text" placeholder="点'搜索'进行随机或输入文字搜索">
-        <button class="search_button">搜索</button>
+    <h2>🎵 歌单</h2>
+    <div class="song-list-container">
+      <div class="left-panel">
+        <div class="song_list">
+          <div class="song_item" v-for="(song, index) in songs" :key="index">
+            <div class="song_info">{{ song.name }} - {{ song.artist }}</div>
+            <div class="info_tag_area">
+              <span class="info_tag" v-for="(tag, tagIndex) in song.tags" :key="tagIndex">{{ tag }}</span>
+            </div>
+              <div class="song_note">{{ song.note }}</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="type_box">
-      <ul class="type_list">
-        <span class="type_selected">全部</span>
-        <span class="type">流行</span>
-        <span class="type">古风</span>
-      </ul>
-    </div>
-    <div class="artist-info" type="artist">
-      <h3>鱼鸽鸽</h3>
-      <p>这是一个机智帅气 美丽动人 玉树临风 风流倜傥的冰山美人 集英俊帅气于一身站在食物链顶端的天才电竞美少女！</p>
-      <p><a href="https://live.bilibili.com/673" target="_blank">直播间</a></p>
-      <p>网易云：鱼鸽鸽</p>
-    </div>
-    <div class="song_list">
-    </div>
+      
+      <div class="right-panel">
+        <div class="artist-info">
+          <img class="face" src="./yugege.jpg" id="face">
+          <h3>歌手：鱼鸽鸽</h3>
+          <p>这是一个机智帅气 美丽动人 玉树临风 风流倜傥的冰山美人 集英俊帅气于一身站在食物链顶端的天才电竞美少女！是一只河豚</p>
+          <p>直播间：<a href="https://live.bilibili.com/673" target="_blank">https://live.bilibili.com/673</a></p>
+          <p>网易云：鱼鸽鸽</p>
+        </div>
+        
+        <div class="type_box">
+          <div class="title">标签</div>
+          <ul class="type_list">
+            <span class="type_selected">全部</span>
+            <span class="type">流行</span>
+            <span class="type">古风</span>
+            <span class="type">中文</span>
+            <span class="type">英文</span>
+          </ul>
+        </div>
+        
+        <div class="search_box">
+          <div class="search_form">
+            <input class="search_input" type="text" placeholder="输入文字搜索">
+            <button class="search_button">搜索</button>
+          </div>
+        </div>
+        <div class="random_box">
+          <button class="random_button">随机一首</button>
+        </div>
+      </div>
   </div>
 </template>
 
 <style scoped>
+.song_note {
+  font-size: 0.9rem;
+  color: #000000;
+  margin-top: 0.5rem;
+}
+
+.song-list-container {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.left-panel {
+  flex: 2;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .song-list {
   display: block;
 }
@@ -48,6 +107,16 @@
 }
 
 .search_button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #2196F3;
+  color: white;
+  cursor: pointer;
+}
+
+.random_button { 
   padding: 0.5rem 1rem;
   font-size: 1rem;
   border: none;
@@ -116,6 +185,7 @@
 .song_info {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
+  color: black;
 }
 
 .info_tag_area {
@@ -124,14 +194,17 @@
 }
 
 .info_tag {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  color: #000000;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.9rem;
 }
 
 .artist-info { 
+  color: black;
+}
+
+.title {
   color: black;
 }
 </style>
