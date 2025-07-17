@@ -9,6 +9,7 @@
         <button @click="$emit('tab-change', 'calculator')">计算器</button>
         <button @click="$emit('tab-change', 'password')">密码生成器</button>
         <button @click="$emit('tab-change', 'whatPassword')">猜密码小游戏</button>
+        <button @click="$emit('tab-change', 'song-list')">鱼鸽鸽歌单</button>
       </div>
     </div>
   </nav>

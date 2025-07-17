@@ -1,5 +1,5 @@
 <template>
-  <div class="desktop">
+  <div>
     <div class="desktop-background"></div>
     
     <main class="desktop-content">
@@ -18,6 +18,9 @@
       <div v-if="activeTab === 'whatPassword'" class="app-window">
         <PasswordGame />
       </div>
+      <div v-if="activeTab === 'song-list'" class="app-window">
+        <SongList />
+      </div>
     </main>
 
     <Dock :active-tab="activeTab" @tab-change="handleTabChange" />
@@ -34,8 +37,21 @@ import ColorPicker from './components/color/ColorPicker.vue'
 import Calculator from './components/calculator/Calculator.vue'
 import PasswordGenerator from './components/password/PasswordGenerator.vue'
 import PasswordGame from './components/game/PasswordGame.vue'
+import SongList from './components/song-list/SongList.vue'
 
 const activeTab = ref('')
+
+// 注册组件
+const components = {
+  Dock,
+  Footer,
+  Timer,
+  ColorPicker,
+  Calculator,
+  PasswordGenerator,
+  PasswordGame,
+  SongList
+}
 
 const handleTabChange = (tab: string) => {
   activeTab.value = tab
