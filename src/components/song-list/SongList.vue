@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import songs from './songs.json'
+    import { ref } from 'vue'
     
     interface Song {
       name: string;
@@ -7,28 +8,29 @@
       tags: string[];
       note: string;
     }
-    
-    // 直接使用导入的songs
+
+const showToast = ref(false)
+const toastMessage = ref('')
+
+const randomSong = () => {
+  const randomIndex = Math.floor(Math.random() * songs.length)
+  const song = songs[randomIndex]
+  const text = `点歌 ${song.name}`
+  navigator.clipboard.writeText(text).then(() => {
+    toastMessage.value = `已复制: ${text}`
+    showToast.value = true
+    setTimeout(() => showToast.value = false, 2000) // 2秒后自动消失
+  }).catch(err => {
+    console.error('复制失败:', err)
+  })
+}
 </script>
 
 <template>
   <div class="card song-list">
     <h2>🎵 歌单</h2>
-    <div class="song-list-container">
-      <div class="left-panel">
-        <div class="song_list">
-          <div class="song_item" v-for="(song, index) in songs" :key="index">
-            <div class="song_info">{{ song.name }} - {{ song.artist }}</div>
-            <div class="info_tag_area">
-              <span class="info_tag" v-for="(tag, tagIndex) in song.tags" :key="tagIndex">{{ tag }}</span>
-            </div>
-              <div class="song_note">{{ song.note }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="right-panel">
+
+    <div class="right-panel">
         <div class="artist-info">
           <img class="face" src="./yugege.jpg" id="face">
           <h3>歌手：鱼鸽鸽</h3>
@@ -52,16 +54,51 @@
           <div class="search_form">
             <input class="search_input" type="text" placeholder="输入文字搜索">
             <button class="search_button">搜索</button>
+            <button class="random_button" @click="randomSong">随机一首</button>
           </div>
         </div>
-        <div class="random_box">
-          <button class="random_button">随机一首</button>
+    </div>
+
+    <div class="left-panel">
+      <div class="song-list-container">
+        <div class="song_list">
+          <div class="song_item" v-for="(song, index) in songs" :key="index">
+            <div class="song_info">{{ song.name }} - {{ song.artist }}</div>
+            <div class="info_tag_area">
+              <span class="info_tag" v-for="(tag, tagIndex) in song.tags" :key="tagIndex">{{ tag }}</span>
+            </div>
+              <div class="song_note">{{ song.note }}</div>
+            </div>
+          </div>
         </div>
-      </div>
+    </div>
+
+  </div>
+  <div v-if="showToast" class="toast">
+      {{ toastMessage }}
   </div>
 </template>
 
 <style scoped>
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  animation: fadeInOut 2s;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 .song_note {
   font-size: 0.9rem;
   color: #000000;
@@ -69,17 +106,18 @@
 }
 
 .song-list-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
   gap: 2rem;
   margin-top: 1rem;
 }
 
 .left-panel {
-  flex: 2;
+  min-width: 0;
 }
 
 .right-panel {
-  flex: 1;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
