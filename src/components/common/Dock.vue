@@ -1,11 +1,6 @@
 <template>
   <div class="dock-container">
-    <!-- 移动端折叠按钮 -->
-    <div v-if="isMobile" class="mobile-toggle" @click="toggleDock">
-      <span class="toggle-icon">{{ isCollapsed ? '➕' : '✖️' }}</span>
-    </div>
-    
-    <div class="dock" :class="{ 'mobile-collapsed': isMobile && isCollapsed }">
+    <div class="dock" :class="{ 'collapsed': isCollapsed }">
       <div 
         v-for="(item, index) in dockItems" 
         :key="index"
@@ -16,13 +11,16 @@
         <span class="dock-label">{{ item.label }}</span>
       </div>
     </div>
+    
+    <!-- 通用折叠按钮 -->
+    <div class="toggle-button" @click="toggleDock">
+      <span class="toggle-icon">{{ isCollapsed ? '➕' : '✖️' }}</span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-
-
 
 const emit = defineEmits<{
   (e: 'tab-change', tab: string): void
@@ -34,51 +32,62 @@ const dockItems = [
   { id: 'calculator', icon: '🧮', label: '计算器' },
   { id: 'password', icon: '🔑', label: '密码生成器' },
   { id: 'whatPassword', icon: '🎮', label: '猜密码' },
-  { id: 'song-list', icon: '🎵', label: '鱼鸽鸽歌单' }
+  { id: 'song-list', icon: '🎵', label: '歌势推荐' }
 ]
 
-// 移动端响应式状态
-const isMobile = ref(false)
-const isCollapsed = ref(true) // 默认收起
-
-// 检测窗口大小变化
-const checkMobile = () => {
-  isMobile.value = window.innerWidth <= 768
-}
-
-// 组件挂载和卸载时添加/移除事件监听
-onMounted(() => {
-  checkMobile()
-  window.addEventListener('resize', checkMobile)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', checkMobile)
-})
+// 折叠状态 - 默认收起
+const isCollapsed = ref(true)
 
 // 切换折叠状态
 const toggleDock = () => {
   isCollapsed.value = !isCollapsed.value
 }
 
+// 组件挂载和卸载时添加/移除事件监听
+onMounted(() => {
+  // 3秒后自动收起
+  setTimeout(() => {
+    isCollapsed.value = true
+  }, 3000)
+})
+
 const handleClick = (tab: string) => {
   emit('tab-change', tab)
-  // 在移动端点击功能后自动收起
-  if (isMobile.value) {
-    isCollapsed.value = true
-  }
+  // 点击功能后自动收起
+  isCollapsed.value = true
 }
 </script>
 
 <style scoped>
 .dock-container {
   position: fixed;
-  bottom: 80px;
-  left: 0;
-  width: 100%;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* 通用折叠按钮 */
+.toggle-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: center;
-  z-index: 1000;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.toggle-button:hover {
+  transform: scale(1.1);
 }
 
 .dock {
@@ -88,6 +97,20 @@ const handleClick = (tab: string) => {
   border-radius: 20px;
   padding: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  transform-origin: bottom right;
+}
+
+/* 折叠状态 */
+.dock.collapsed {
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
 }
 
 .dock-item {
@@ -121,62 +144,13 @@ const handleClick = (tab: string) => {
 }
 
 @media (max-width: 768px) {
-  .dock-container {
-    bottom: 20px;
-    left: auto;
-    right: 20px;
-    width: auto;
-    height: auto;
-    flex-direction: column;
-  }
-
   .dock {
     flex-direction: column;
-    padding: 10px;
-    transition: all 0.3s ease;
-    transform-origin: bottom right;
-  }
-  
-  /* 折叠状态 */
-  .dock.mobile-collapsed {
-    transform: scale(0);
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  /* 展开状态 */
-  .dock:not(.mobile-collapsed) {
-    transform: scale(1);
-    opacity: 1;
-    pointer-events: auto;
   }
 
   .dock-item {
     padding: 12px 10px;
     margin: 5px 0;
-  }
-  
-  /* 移动端折叠按钮样式 */
-  .mobile-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 1001;
-    transition: all 0.3s ease;
-  }
-  
-  .mobile-toggle:hover {
-    transform: scale(1.1);
   }
   
   .toggle-icon {
