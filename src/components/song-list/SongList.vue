@@ -67,10 +67,17 @@
 .artist-row {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .artist-text {
   margin-left: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .face {
